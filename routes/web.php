@@ -14,9 +14,5 @@ use App\Http\Controllers\SendEmailController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Route::get('/sendemail', [SendEmailController::class, 'index']);
 Route::post('/sendemail/send', [SendEmailController::class, 'send']);
