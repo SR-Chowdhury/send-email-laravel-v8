@@ -1,62 +1,265 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# How to send an Email in Laravel 8
 
-## About Laravel
+- [ ] Use this project 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> run in terminal `composer update` & `copy .env.example .evn ` & `php artisan key:generate`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Simple Way to Sending an Email in Laravel
 
-## Learning Laravel
+**Step 1 - Install Laravel Application **
+    `composer create-project laravel/laravel send-email-laravel`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Step 2 - Create Controller**
+    `php artisan make:controller SendEmailController`
+    
+**_app/Http/Controllers/SendEmailController.php_**
+```
+    <?php
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    namespace App\Http\Controllers;
 
-## Laravel Sponsors
+    use Illuminate\Http\Request;
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+    class SendEmailController extends Controller
+    {
+        function index()
+        {
+         return view('send_email');
+        }
+    }
+```
 
-### Premium Partners
+**Step 3 - Create View Contact Form**
+**_resouces/views/send_email.blade.php_**
+```
+    <!doctype html>
+    <html lang="en">
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Shihanur Rahman Chowdhury">
 
-## Contributing
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+        <title>Send Email using Laravel 8</title>
+        <style type="text/css">
+            .box {
+                width: 600px;
+                margin: 0 auto;
+                border: 1px solid #ddd;
+            }
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+            .has-error {
+                border-color: #cc0000;
+                background-color: #ffff99;
+            }
+        </style>
+    </head>
 
-## Code of Conduct
+    <body>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+        <h1 class="text-center py-3">Bismillahir Rahmanir Rahim</h1>
 
-## Security Vulnerabilities
+        <div class="container box">
+            <h3 class="text-center pt-3">How to Send an Email in Laravel v8</h3><br />
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+            @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{ $message }}</strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
 
-## License
+            <form method="post" action="{{url('sendemail/send')}}">
+                {{ csrf_field() }}
+                <div class="form-group py-2">
+                    <label>Enter Your Name</label>
+                    <input type="text" name="name" class="form-control" value="" placeholder='Enter your name' Required />
+                </div>
+                <div class="form-group py-2">
+                    <label>Enter Your Email</label>
+                    <input type="email" name="email" class="form-control" value="" placeholder='example@gmail.com' Required />
+                </div>
+                <div class="form-group py-2">
+                    <label>Enter Your Message </label>
+                    <textarea name="message" class="form-control" rows="4" placeholder='Type your message...' Required></textarea>
+                </div>
+                <div class="form-group py-3">
+                    <input type="submit" name="send" class="btn btn-info" value="Send Message" />
+                </div>
+            </form>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous">
+        </script>
+    </body>
+
+    </html>
+
+```
+
+**Step 4 - Set Route**
+**_routes/web.php_**
+```
+    <?php
+
+    use Illuminate\Support\Facades\Route;
+    use App\Http\Controllers\SendEmailController;
+
+
+    Route::get('/sendemail', [SendEmailController::class, 'index']);
+    Route::post('/sendemail/send', [SendEmailController::class, 'send']);
+
+```
+
+**Step 5 - Edit .env File**
+```
+    MAIL_MAILER=smtp
+    MAIL_HOST=smtp.gmail.com
+    MAIL_PORT=587
+    MAIL_USERNAME=your@gmail.com
+    MAIL_PASSWORD=your gmail password
+    MAIL_ENCRYPTION=tls
+    MAIL_FROM_ADDRESS=your@gmail.com
+    MAIL_FROM_NAME="${APP_NAME}"
+```
+
+**Step 6 - Edit Gamil Account Setting**
+- [ ] manage your google account > Security > `Less Secure app Access: On`
+
+**Step 7 - Create Mailable Class**
+    `php artisan make:mail SendMail`
+    
+**_App\Mail\SendMail.php_**    
+ ```
+    <?php
+
+    namespace App\Mail;
+
+    use Illuminate\Bus\Queueable;
+    use Illuminate\Contracts\Queue\ShouldQueue;
+    use Illuminate\Mail\Mailable;
+    use Illuminate\Queue\SerializesModels;
+
+    class SendMail extends Mailable
+    {
+        use Queueable, SerializesModels;
+        public $data;
+
+        /**
+         * Create a new message instance.
+         *
+         * @return void
+         */
+        public function __construct($data)
+        {
+            $this->data = $data;
+        }
+
+        /**
+         * Build the message.
+         *
+         * @return $this
+         */
+        public function build()
+        {
+            return $this
+            ->from('example@gmail.com')
+            ->subject('New Message - XXXX')
+            ->view('dynamic_email_template')
+            ->with('data', $this->data);
+        }
+    }
+
+ ```
+ **Step 8 - Make View file for Email Body**
+ **_resources/views/dynamic_email_template.blade.php_**
+ ```
+     <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Mail From SWMC-Client</title>
+    </head>
+
+    <body>
+
+        <h3><b>Email: {{ $data['email'] }}</b></h3>
+        <p>Name: {{ $data['name'] }}</p>
+        <p>Message: {{ $data['message'] }}</p><br>
+        <p>It would be appriciative, if you gone through this feedback.</p>
+
+    </body>
+
+    </html>
+ ```
+ 
+ **Step 9 - Make Send() under `SendEmailController` Controller**
+ ```
+     <?php
+
+    namespace App\Http\Controllers;
+
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Mail;
+    use App\Mail\SendMail;
+
+    class SendEmailController extends Controller
+    {
+        function index() {
+            return view('send_email');
+        }
+        function send(Request $request) {
+
+            $this->validate($request, [
+                'name'     =>  'required',
+                'email'  =>  'required|email',
+                'message' =>  'required'
+            ]);
+
+            $data = array(
+                'name'      =>  $request->name,
+                'email'      =>  $request->email,
+                'message'   =>   $request->message
+            );
+
+            Mail::to('block.blaster.wrong@gmail.com')->send(new SendMail($data));
+            return back()->with('success', 'Thanks for contacting us!');
+
+        }
+    }
+
+ ```
+ **Step 10 - Change config/mail.php**
+ ```
+     'from' => [
+            'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+            'name' => env('MAIL_FROM_NAME', 'New Message'),
+        ],
+ ```
+ **Setp 11 - Finally Run**
+    `php artisan serve --port=3303`
+    
+#Thanks.
